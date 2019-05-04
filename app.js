@@ -1,5 +1,8 @@
 var slideCount = 0
+var activeSlide = 0
 var menu_button = document.getElementById( 'menu-toggle' )
+var input = document.getElementById('input')
+
 menu_button.onclick = toggle_menu
 document.getElementById('add-text-button').onclick = add_text
 document.getElementById('delete-menu').onclick = delete_all
@@ -18,40 +21,69 @@ if ("serviceWorker" in navigator){
 
 function display_thoughts(){
   getThoughts(function(thoughts) {
-    var container = document.getElementById('input')
-    container.innerHTML = ""
+    input.innerHTML = ""
     for (thought of thoughts) {
       var div = document.createElement('div')
       div.className = "thought-block"
       div.innerHTML = `<p>${thought.text}</p>`
-      container.appendChild(div)
+      input.appendChild(div)
       
       var mc = new Hammer(div)
       mc.get('swipe').set({ direction: Hammer.DIRECTION_UP })
       mc.on("swipeup", add_to_thread)
     }
     slideCount = thoughts.length
-    var mc = new Hammer(container)
+    input.style.width = "" + slideCount * 100 + "%"
+    var mc = new Hammer(input)
     mc.on("pan", slide)
   })
 }
 
 function slide(ev){
-  var percentage = 100 / slideCount * ev.deltaX / window.innerWidth; 
-  ev.target.style.transform = 'translateX(' + percentage + '%)'; 
+  var percentage = 100 / slideCount * ev.deltaX / window.innerWidth
+  var transformPercentage = percentage - 100 / slideCount * activeSlide
+  input.style.transform = 'translateX(' + transformPercentage + '%)'
+  if(ev.isFinal) {
+    if(percentage < 0)
+      goToSlide(activeSlide + 1)
+    else if(percentage > 0)
+      goToSlide(activeSlide - 1)
+    else
+      goToSlide(activeSlide)
+  }
 }
 
+var goToSlide = function(number) {
+  if(number < 0)
+    activeSlide = 0
+  else if(number > slideCount - 1)
+    activeSlide = slideCount - 1
+  else
+    activeSlide = number
+
+ var percentage = -(100 / slideCount) * activeSlide
+ input.style.transform = 'translateX(' + percentage + '%)'
+};
+
 function add_to_thread(ev){
-  var div = ev.target
+  if (ev.target.classList.contains("thought-block")) 
+    var div = ev.target
+  else 
+    var div = ev.target.parentNode
+    
   var clone = div.cloneNode(true)
   var mc = new Hammer(clone)
   mc.on("swiperight", remove_from_thread)
   document.getElementById("display").appendChild(clone)
+  div.scrollIntoView(false)
   
 }
 
 function remove_from_thread(ev){
-  var div = ev.target
+  if (ev.target.classList.contains("thought-block")) 
+    var div = ev.target
+  else 
+    var div = ev.target.parentNode
   div.parentNode.removeChild(div);
   
 }
@@ -74,8 +106,7 @@ function delete_all() {
     for (thought of thoughts) {
       deleteFromObjectStore("thoughts", thought.id)
     }
-    var container = document.getElementById('input')
-    container.innerHTML = ""
+    input.innerHTML = ""
     slideCount = 0
   })
   

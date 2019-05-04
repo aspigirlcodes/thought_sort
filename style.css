@@ -170,7 +170,8 @@ PAGE STRUCTURE
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
-  margin-left: auto;        
+  margin-left: auto; 
+  overflow: hidden;       
 }
 
 @media only screen and (min-width: 576px){
@@ -200,6 +201,7 @@ PAGE STRUCTURE
 
 #display {
   flex: 8 0 auto;
+  margin-bottom: 1rem;
 }
 
 @media only screen and (max-width: 700px){
@@ -212,7 +214,6 @@ PAGE STRUCTURE
   flex: 1 1 auto;
   display: flex;
   align-items: stretch;
-  overflow-x: auto;
 }
 
 /*
@@ -220,12 +221,12 @@ INPUT SECTION
 */
 
 .thought-block {
-  flex: 0 0 auto;
-  width: 100%;
+  flex: 0 1 100%;
   border: 2px solid #333333;
   text-align: center;
   display: flex;
   padding: 0 3rem;
+  width: 100%;
 }
 
 .thought-block p {
