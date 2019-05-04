@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Thought sort</title>
+		<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="aria.modal.css">
+	</head>
+	<body>
+    <nav class="navbar">
+      <button class="menu-toggle" id="menu-toggle" aria-expanded="false"><span class="visuallyhidden">Menu</span>
+					<svg class="icon icon-menu-toggle" aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100">
+						<g class="svg-menu-toggle">
+							<path class="line line-1" d="M5 13h90v14H5z"/>
+							<path class="line line-2" d="M5 43h90v14H5z"/>
+							<path class="line line-3" d="M5 73h90v14H5z"/>
+						</g>
+					</svg>
+			</button>
+      <h2 class="visuallyhidden">Main Menu</h2>
+    	<ul class="navbar-nav" id="nav-menu">
+        <li class="nav-item">
+          <button type="button" data-modal-open="modal_1" id="texts-menu" class="open-dialog nav-link"> Add Thoughts </button>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="share-menu" href="#">Share Thoughts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="delete-menu" href="#">Clear Thoughts</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div id="display">
+      </div>
+      <div id="input">
+        
+      </div>
+    </div>
+    
+    <div id="modal_1" data-modal>
+      <div data-modal-document>
+        <h1>
+          Add Thoughts
+        </h1>
+        <hr/>
+          <div>
+            <label for="inputText">Thoughts</label>
+            <textarea id="inputText" rows="8"></textarea>
+          </div>
+          <button type="button" id="add-text-button" class="button-new right">Save</button>
+        </div>
+      </div>
+    </div>
+    <script src="hammer.min.js"></script>
+    <script src="db_interactions.js"></script>
+    <script src="app.js"></script>
+    <script src="aria.modal.min.js"></script>
+  </body>

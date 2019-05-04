@@ -1,0 +1,234 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html{
+  height: 100%;
+}
+
+body {
+  background-color: #1e1f21;
+  color: white;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  height: 100%;
+}
+
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+button,
+input[type="button"] {
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 2px;
+	background: #000;
+	cursor: pointer;
+	transition: all 0.25s ease-in-out;
+}
+
+input[type=text],
+textarea {
+  width: 100%;
+  background: black;
+  border: 2px solid #333333;
+  color: white;
+  padding: 0.5rem;
+}
+
+.button-new {
+  background-color: #079b2a;
+  padding: .5rem;
+}
+hr {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  white-space: pre-wrap;
+}
+
+/*
+NAVIGATION
+*/
+.navbar-nav {
+  list-style-type: none;
+  visibility: hidden;
+  position: absolute;
+  width: 100%;
+  opacity: 0;
+  transition: all .25s ease-in-out;
+}
+
+.navbar-nav.active {
+  visibility: visible;
+  background-color: #333333;
+  opacity: 1;
+}
+
+.navbar-nav li {
+  text-align: center;
+  margin: 0px auto;
+  padding: 15px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.7);
+  background-color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+/* Hamburger menu from https://codepen.io/samikeijonen/pen/jqvxdL */
+.menu-toggle {
+  font-size: 0.875em;
+	padding: 1em;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer; 
+  color: rgba(255,255,255,0.8);  
+  background-color: #333333;
+  z-index: 9;
+}
+
+.menu-toggle:focus {
+	outline: thin dotted;
+  outline-offset: -2px;
+}
+
+.icon {
+	display: inline-block;
+	fill: currentColor;
+	height: 1em;
+	width: 1em;
+	vertical-align: middle;
+	position: relative; /* Align more nicely with capital letters */
+	top: -0.0625em;
+}
+
+/* Menu toggle styles. */
+
+.icon-menu-toggle {
+	width: 2em;
+	height: 2em;
+  top: 0;
+}
+
+/* Animate menu icon (lines). */
+.svg-menu-toggle .line {
+  opacity: 1;
+  transform: rotate(0) translateY(0) translateX(0);
+  transform-origin: 1em 1em;
+  transition: transform 0.3s ease-in-out, opacity 0.2s ease-in-out;
+}
+.svg-menu-toggle .line-1 {
+  transform-origin: 1em 2.5em;
+}
+.svg-menu-toggle .line-3 {
+  transform-origin: 1em 4.5em;
+}
+
+.menu-toggle.opened .svg-menu-toggle .line-1 {
+  transform: rotate(45deg) translateY(0) translateX(0);
+}
+.menu-toggle.opened .svg-menu-toggle .line-2 {
+  opacity: 0;
+}
+.menu-toggle.opened .svg-menu-toggle .line-3 {
+  transform: rotate(-45deg) translateY(0em) translateX(0em);
+}
+
+/*
+PAGE STRUCTURE
+*/
+
+.container {
+  display: flex;
+  flex-direction:column;
+  min-height: 100%;
+  width: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;        
+}
+
+@media only screen and (min-width: 576px){
+  .container {
+    max-width: 540px;
+    width: auto;
+  }
+}
+
+@media only screen and (min-width: 768px){
+  .container {
+    max-width: 650px;
+  }
+}
+
+@media only screen and (min-width: 992px){
+  .container {
+    max-width: 860px;
+  }
+}
+
+@media only screen and (min-width: 1200px){
+  .container {
+    max-width: 1080px;
+  }
+}
+
+#display {
+  flex: 8 0 auto;
+}
+
+@media only screen and (max-width: 700px){
+  #display {
+    margin-top: 5rem;
+  }
+}
+
+#input {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+}
+
+/*
+INPUT SECTION
+*/
+
+.thought-block {
+  flex: 0 0 auto;
+  width: 100%;
+  border: 2px solid #333333;
+  text-align: center;
+  display: flex;
+  padding: 0 3rem;
+}
+
+.thought-block p {
+  display: block;
+  margin: auto;
+}
