@@ -21,26 +21,22 @@
       <h2 class="visuallyhidden">Main Menu</h2>
     	<ul class="navbar-nav" id="nav-menu">
         <li class="nav-item">
-          <button type="button" data-modal-open="modal_1" id="texts-menu" class="open-dialog nav-link"> Add Thoughts </button>
+          <button type="button" data-modal-open="modal_1" id="texts-menu" class="open-dialog nav-link"> Add/Edit Thoughts </button>
         </li>
         <li class="nav-item">
           <a class="nav-link" id="share-menu" href="#">Share Thoughts</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="delete-menu" href="#">Clear Thoughts</a>
+          <a class="nav-link" id="clear-menu" href="#">Clear Thoughts</a>
         </li>
       </ul>
     </nav>
     <div class="container">
       <div id="display">
       </div>
-      <div id='input'>
+      <div id="input">
         
       </div>
-      
-    </div>
-    
-    <div class='has-slider'>
       
     </div>
     
@@ -54,7 +50,8 @@
             <label for="inputText">Thoughts</label>
             <textarea id="inputText" rows="8"></textarea>
           </div>
-          <button type="button" id="add-text-button" class="button-new right">Save</button>
+          <button type="button" id="delete-text-button" class="button-delete">Delete all</button>
+          <button type="button" data-modal-close-btn id="add-text-button" class="button-new right">Save</button>
         </div>
       </div>
     </div>

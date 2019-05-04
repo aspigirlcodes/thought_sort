@@ -2,10 +2,13 @@ var slideCount = 0
 var activeSlide = 0
 var menu_button = document.getElementById( 'menu-toggle' )
 var input = document.getElementById('input')
+var mc = new Hammer(input)
+mc.on("pan", slide)
 
 menu_button.onclick = toggle_menu
 document.getElementById('add-text-button').onclick = add_text
-document.getElementById('delete-menu').onclick = delete_all
+document.getElementById('delete-text-button').onclick = delete_all
+document.getElementById('clear-menu').onclick = clear_thoughts
 document.getElementById('share-menu').onclick = share_thoughts
 
 display_thoughts()
@@ -22,7 +25,9 @@ if ("serviceWorker" in navigator){
 function display_thoughts(){
   getThoughts(function(thoughts) {
     input.innerHTML = ""
+    var texts = []
     for (thought of thoughts) {
+      texts.push(thought.text)
       var div = document.createElement('div')
       div.className = "thought-block"
       div.innerHTML = `<p>${thought.text}</p>`
@@ -34,8 +39,8 @@ function display_thoughts(){
     }
     slideCount = thoughts.length
     input.style.width = "" + slideCount * 100 + "%"
-    var mc = new Hammer(input)
-    mc.on("pan", slide)
+    var text = texts.join("\n\n")
+    document.getElementById('inputText').value = text
   })
 }
 
@@ -53,17 +58,17 @@ function slide(ev){
   }
 }
 
-var goToSlide = function(number) {
+function goToSlide(number) {
   if(number < 0)
     activeSlide = 0
   else if(number > slideCount - 1)
     activeSlide = slideCount - 1
   else
     activeSlide = number
-
- var percentage = -(100 / slideCount) * activeSlide
- input.style.transform = 'translateX(' + percentage + '%)'
-};
+  console.log(activeSlide)  
+  var percentage = -(100 / slideCount) * activeSlide
+  input.style.transform = 'translateX(' + percentage + '%)'
+}
 
 function add_to_thread(ev){
   if (ev.target.classList.contains("thought-block")) 
@@ -89,16 +94,24 @@ function remove_from_thread(ev){
 }
 
 function add_text() {
-  var text = document.getElementById('inputText')
-  if (text.value){
-    var thoughts = text.value.split("\n\n")
-    for (var thought of thoughts){
-      addToObjectStore("thoughts", {'text': thought})
+  getThoughts(function(thoughts) {
+    for (thought of thoughts) {
+      deleteFromObjectStore("thoughts", thought.id)
     }
-    
-  }
-  text.value = ""
-  display_thoughts()
+    input.innerHTML = ""
+    slideCount = 0
+    var text = document.getElementById('inputText')
+    if (text.value){
+      var thoughts = text.value.split("\n\n")
+      for (var thought of thoughts){
+        thought = thought.trim()
+        addToObjectStore("thoughts", {'text': thought})
+      }
+    }
+    text.value = ""
+    display_thoughts()
+    close_menu()
+  })
 }
 
 function delete_all() {
@@ -108,7 +121,13 @@ function delete_all() {
     }
     input.innerHTML = ""
     slideCount = 0
+    document.getElementById('inputText').value = ""
   })
+}
+
+function clear_thoughts(){
+  toggle_menu()
+  document.getElementById('display').innerHTML = ""
   
 }
 
