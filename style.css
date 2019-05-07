@@ -67,6 +67,10 @@ textarea {
   float: right;
 }
 
+.panable, .panable * {
+  touch-action: none !important;
+}
+
 hr {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;

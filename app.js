@@ -1,9 +1,12 @@
 var slideCount = 0
 var activeSlide = 0
+var scrollParam = 0
+
 var menu_button = document.getElementById( 'menu-toggle' )
 var input = document.getElementById('input')
+
 var mc = new Hammer(input)
-mc.on("pan", slide)
+mc.on("panleft panright", slide)
 
 menu_button.onclick = toggle_menu
 document.getElementById('add-text-button').onclick = add_text
@@ -64,33 +67,87 @@ function goToSlide(number) {
   else if(number > slideCount - 1)
     activeSlide = slideCount - 1
   else
-    activeSlide = number
-  console.log(activeSlide)  
+    activeSlide = number 
   var percentage = -(100 / slideCount) * activeSlide
   input.style.transform = 'translateX(' + percentage + '%)'
 }
 
 function add_to_thread(ev){
-  if (ev.target.classList.contains("thought-block")) 
-    var div = ev.target
-  else 
-    var div = ev.target.parentNode
-    
+  var div = getDiv(ev.target)
   var clone = div.cloneNode(true)
   var mc = new Hammer(clone)
   mc.on("swiperight", remove_from_thread)
+  mc.on("press", add_sort_event)
+  mc.get("pan").set({ direction: Hammer.DIRECTION_VERTICAL , enable: canEnable})
+  mc.on("pan", sort)
+  mc.on("pressup", stop_sort)
   document.getElementById("display").appendChild(clone)
   div.scrollIntoView(false)
   
 }
 
-function remove_from_thread(ev){
-  if (ev.target.classList.contains("thought-block")) 
-    var div = ev.target
+function getDiv(target){
+  if (target.classList.contains("thought-block")) 
+    return target
   else 
-    var div = ev.target.parentNode
+    return target.parentNode
+}
+
+function canEnable(rec, input){
+  var div = getDiv(rec.manager.element)
+  return div.classList.contains("panable")
+}
+
+function remove_from_thread(ev){
+  var div = getDiv(ev.target)
   div.parentNode.removeChild(div);
+}
+
+function add_sort_event(ev){
+  var div = getDiv(ev.target)
+  div.style.marginLeft = "5px"
+  div.style.marginTop = "5px"
+  div.style.backgroundColor = "#333333"
+  div.style.zIndex = 100
+  div.classList.add('panable')
+}
+function sort(ev){
+  if(ev.srcEvent.type === 'pointercancel') return //chrome hack https://github.com/hammerjs/hammer.js/issues/1050
+  ev.preventDefault() // prevent scrolling in firefox
+  var div = getDiv(ev.target)
+  div.style.transform = 'translateY(' + (ev.deltaY + scrollParam) + 'px)' 
+  var scrollMaxY = window.scrollMaxY || (Math.max( document.body.scrollHeight, document.body.offsetHeight, 
+                     document.documentElement.clientHeight, document.documentElement.scrollHeight, 
+                     document.documentElement.offsetHeight ) - window.innerHeight)
+  if (ev.center.y < 25 && window.scrollY > 0){
+    window.scrollBy(0, -5)
+    scrollParam -= 5
+  } else if (ev.center.y > (window.innerHeight - 25) && window.scrollY < scrollMaxY){
+    window.scrollBy(0, 5)
+    scrollParam += 5
+  }
+  if(ev.isFinal) {
+    div.style = ""
+    div.classList.remove('panable')
+    scrollParam = 0
+    var targetDiv = getDiv(document.elementFromPoint(ev.center.x, ev.center.y))
+    if (targetDiv.classList.contains("thought-block") && targetDiv.parentNode.id === "display")
+      div.parentNode.insertBefore(div, targetDiv)
+    else 
+      document.getElementById("display").appendChild(div)  
+  } 
   
+  
+}
+
+function stop_sort(ev){
+  if(ev.srcEvent.type === 'pointercancel') return //chrome hack https://github.com/hammerjs/hammer.js/issues/1050
+  var div = getDiv(ev.target)
+  if(ev.isFinal) {
+    div.style = ""
+    div.classList.remove('panable')
+    scrollParam = 0
+  }
 }
 
 function add_text() {
