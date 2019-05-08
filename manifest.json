@@ -2,8 +2,8 @@
   "short_name": "thoughts",
   "name": "Thought sorter",
   "description": "Enter your thoughts, sort them, and share them.",
-  "start_url": "",
-  "scope": "",
+  "start_url": "/thought_sort",
+  "scope": "/thought_sort",
   "icons": [
     {
       "src": "android-chrome-192x192.png",
