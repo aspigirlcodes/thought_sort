@@ -42,6 +42,8 @@ function display_thoughts(){
     }
     slideCount = thoughts.length
     input.style.width = "" + slideCount * 100 + "%"
+    input.style.transform = 'translateX(0%)'
+    activeSlide = 0
     var text = texts.join("\n\n")
     document.getElementById('inputText').value = text
   })
