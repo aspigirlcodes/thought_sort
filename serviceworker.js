@@ -1,8 +1,23 @@
-var CACHE_NAME = "thoughts_cache_v1"
+var CACHE_NAME = "thoughts_cache_v2"
 var immutableRequests = [
+  //css
   "aria.modal.css",
+  //js
   "aria.modal.min.js",
-  "hammer.min.js"
+  "hammer.min.js",
+  //images
+  "android-chrome-192x192.png",
+  "android-chrome-512x512.png",
+  "apple-touch-icon.png",
+  "favicon-16x16.png",
+  "favicon-32x32.png",
+  "favicon.ico",
+  "mstile-70x70.png",
+  "mstile-144x144.png",
+  "mstile-150x150.png",
+  "mstile-310x150.png",
+  "mstile-310x310.png",
+  "safari-pinned-tab.svg"
 ]
 var mutableRequests = [
   "index.html",
@@ -10,6 +25,9 @@ var mutableRequests = [
   "app.js",
   "db_interactions.js",
 ]
+
+var CACHED_URLS = immutableRequests + mutableRequests
+
 
 self.addEventListener("install", function(event){
   event.waitUntil(
@@ -38,7 +56,7 @@ self.addEventListener("activate", function(event){
     caches.keys().then(function(cacheNames){
       return Promise.all(
         cacheNames.map(function(cacheName){
-          if (CACHE_NAME !== cacheName && cacheName.startsWith("help_chat_cache")){
+          if (CACHE_NAME !== cacheName && cacheName.startsWith("thoughts_cache")){
             return caches.delete(cacheName)
           }
         })
@@ -48,15 +66,29 @@ self.addEventListener("activate", function(event){
 })
 
 self.addEventListener("fetch", function(event){
-  event.respondWith(
-    fetch(event.request).catch(function(){
-      return caches.match(event.request).then(function(response){
-        if (response) {
-          return response
-        } else if (event.request.headers.get("accept").includes("text/html")) {
-          return caches.match("index.html")
-        }
+  var requestURL = new URL(event.request.url)
+  // at ghpages we are not at root but at /thought_sort
+  // because of this also we made all the paths in CACHED_URLS relative without /
+  // so we have to cut the / of the pathname of the url
+  if(requestURL.pathname === "/thought_sort/" || requestURL.pathname === "/")
+    var cacheMatch = "index.html"
+  else if (CACHED_URLS.includes(requestURL.pathname.slice(1))) 
+    var cacheMatch = event.request
+    
+  if (typeof cacheMatch !== 'undefined'){
+    // cache, falling back to network with frequent updates
+    event.respondWith(
+      caches.open(CACHE_NAME).then(function(cache){
+        return cache.match(cacheMatch).then(function(cachedResponse){
+          var fetchPromise = fetch(event.request).then(function(networkResponse){
+            cache.put(cacheMatch, networkResponse.clone())
+            return networkResponse
+          })
+          return cachedResponse || fetchPromise
+        })
       })
-    })
-  )
-})
+    )
+  } 
+  //other requests will pass through untouched 
+  
+})  
