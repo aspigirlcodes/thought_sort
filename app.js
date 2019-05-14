@@ -7,7 +7,8 @@ var input = document.getElementById('input')
 
 var mc = new Hammer(input)
 mc.on("panleft panright", slide)
-
+mc2 = new Hammer(document.body)
+mc2.on("pan", redirect)
 menu_button.onclick = toggle_menu
 document.getElementById('add-text-button').onclick = add_text
 document.getElementById('delete-text-button').onclick = delete_all
@@ -247,4 +248,20 @@ function close_menu() {
   menu_button.setAttribute( 'aria-expanded', 'false' )
   document.getElementById('nav-menu').classList.remove('active')
 }
- 
+
+function redirect(ev){
+  if (ev.center.y < window.innerHeight * 2 / 3 && ev.center.y > window.innerHeight / 3){
+    if (ev.center.x - ev.deltaX > window.innerWidth * 3 / 4){
+      document.body.style.transform = 'translateX(' + ev.deltaX + 'px)'
+    }
+    if (ev.isFinal) {
+      if (ev.center.x < window.innerWidth / 4 && ev.deltaX < - window.innerWidth * 3 / 4){
+        window.location.href = "https://aspigirlcodes.github.io/easy_list"
+      } else {
+        document.body.style.transform =  ''
+      }
+    }
+  }
+  
+  
+} 
