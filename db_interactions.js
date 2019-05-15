@@ -1,4 +1,4 @@
-var db_version = 1
+var db_version = 2
 
 var openDatabase = function(){
   if (!window.indexedDB) {
@@ -16,7 +16,12 @@ var openDatabase = function(){
       db.createObjectStore("thoughts",
         {autoIncrement: true}
       )
-    }    
+    }
+    if (!db.objectStoreNames.contains("thread")) {
+      db.createObjectStore("thread",
+        {autoIncrement: true}
+      )
+    }   
   }
   return request
 }
@@ -36,9 +41,9 @@ var openObjectStore = function(storeName, successCallback, transactionMode) {
   return true
 }
 
-var getThoughts = function(successCallback){
+var getItems = function(storeName, successCallback){
   var texts = []
-  var db = openObjectStore("thoughts", function(objectStore){
+  var db = openObjectStore(storeName, function(objectStore){
     objectStore.openCursor().onsuccess = function(event){
       var cursor = event.target.result
       if (cursor) {
@@ -53,10 +58,16 @@ var getThoughts = function(successCallback){
   })
 }
 
-var addToObjectStore = function(storeName, object){
+var addToObjectStore = function(storeName, object, successCallback){
   openObjectStore(storeName, function(store) {
-    store.add(object)
+    store.add(object).onsuccess = function(event){
+      var id = event.target.result
+      if (successCallback){
+        successCallback(id)
+      }
+    }
   }, "readwrite")
+  
 }
 
 var updateInObjectStore = function(storeName, id, object){

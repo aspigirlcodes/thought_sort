@@ -16,6 +16,7 @@ document.getElementById('clear-menu').onclick = clear_thoughts
 document.getElementById('share-menu').onclick = share_thoughts
 
 display_thoughts()
+display_thread()
 
 if ("serviceWorker" in navigator){
   navigator.serviceWorker.register("serviceworker.js")
@@ -26,11 +27,37 @@ if ("serviceWorker" in navigator){
     })
 }
 
+function display_thread(){
+  if(window.location.search === "?inapp=true"){
+    getItems("thread", function(thoughts){
+      for (var thought of thoughts){
+        var div = document.createElement("div")
+        div.className = "thought-block"
+        div.innerHTML = `<p>${thought.text}</p>`
+        var mc = new Hammer(div)
+        mc.on("swiperight", remove_from_thread)
+        mc.on("press", add_sort_event)
+        mc.on("pan", sort)
+        mc.get("pan").set({ direction: Hammer.DIRECTION_VERTICAL , enable: canEnable})
+        mc.on("pressup", stop_sort)
+        document.getElementById("display").appendChild(div)
+        deleteFromObjectStore("thread", thought.id)
+      }
+    })
+  }else{
+    getItems("thread", function(thoughts) {
+      for (var thought of thoughts) {
+        deleteFromObjectStore("thread", thought.id)
+      }
+    })
+  }
+}
+
 function display_thoughts(){
-  getThoughts(function(thoughts) {
+  getItems("thoughts", function(thoughts) {
     input.innerHTML = ""
     var texts = []
-    for (thought of thoughts) {
+    for ( var thought of thoughts) {
       texts.push(thought.text)
       var div = document.createElement('div')
       div.className = "thought-block"
@@ -154,8 +181,8 @@ function stop_sort(ev){
 }
 
 function add_text() {
-  getThoughts(function(thoughts) {
-    for (thought of thoughts) {
+  getItems("thoughts", function(thoughts) {
+    for (var thought of thoughts) {
       deleteFromObjectStore("thoughts", thought.id)
     }
     input.innerHTML = ""
@@ -175,8 +202,8 @@ function add_text() {
 }
 
 function delete_all() {
-  getThoughts(function(thoughts) {
-    for (thought of thoughts) {
+  getItems("thoughts", function(thoughts) {
+    for (var thought of thoughts) {
       deleteFromObjectStore("thoughts", thought.id)
     }
     input.innerHTML = ""
@@ -186,9 +213,11 @@ function delete_all() {
 }
 
 function clear_thoughts(){
-  toggle_menu()
-  document.getElementById('display').innerHTML = ""
-  
+  close_menu()
+  items = document.getElementById('display').getElementsByClassName("thought-block")
+  while(items.length > 0 ){
+    items[0].parentNode.removeChild(items[0])
+  }  
 }
 
 function share_thoughts(){
@@ -256,7 +285,18 @@ function redirect(ev){
     }
     if (ev.isFinal) {
       if (ev.center.x < window.innerWidth / 4 && ev.deltaX < - window.innerWidth * 3 / 4){
-        window.location.href = "https://aspigirlcodes.github.io/easy_list"
+        items = document.getElementById("display").getElementsByClassName("thought-block")
+        if (items.length > 0){
+          for (var i = 0; i < items.length - 1; i++) {
+            addToObjectStore("thread", {"text": items[i].getElementsByTagName("p")[0].innerHTML})
+          }
+          addToObjectStore("thread", {"text": items[items.length-1].getElementsByTagName("p")[0].innerHTML}, function(){
+            window.location.href = "https://aspigirlcodes.github.io/easy_list/?inapp=true"
+          })
+        } else {
+          window.location.href = "https://aspigirlcodes.github.io/easy_list/?inapp=true"
+        }
+        
       } else {
         document.body.style.transform =  ''
       }
