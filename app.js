@@ -291,10 +291,10 @@ function redirect(ev){
             addToObjectStore("thread", {"text": items[i].getElementsByTagName("p")[0].innerHTML})
           }
           addToObjectStore("thread", {"text": items[items.length-1].getElementsByTagName("p")[0].innerHTML}, function(){
-            window.location.href = "https://aspigirlcodes.github.io/easy_list/?inapp=true"
+            window.location.href = "https://aspigirlcodes.github.io/easy_list/" + window.location.search
           })
         } else {
-          window.location.href = "https://aspigirlcodes.github.io/easy_list/?inapp=true"
+          window.location.href = "https://aspigirlcodes.github.io/easy_list/" + window.location.search
         }
         
       } else {

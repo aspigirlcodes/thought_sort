@@ -1,4 +1,4 @@
-var CACHE_NAME = "thoughts_cache_v2"
+var CACHE_NAME = "thoughts_cache_v3"
 var immutableRequests = [
   //css
   "aria.modal.css",
@@ -73,7 +73,8 @@ self.addEventListener("fetch", function(event){
   if(requestURL.pathname === "/thought_sort/" || requestURL.pathname === "/" || 
     requestURL.pathname === "/thought_sort/index.html" || requestURL.pathname === "/index.html")
     var cacheMatch = "index.html"
-  else if (CACHED_URLS.includes(requestURL.pathname.slice(1))) 
+  else if (CACHED_URLS.includes(requestURL.pathname.slice(1)) || 
+    (requestURL.pathname.startsWith("/thought_sort/") && CACHED_URLS.includes(requestURL.pathname.slice(14)))) 
     var cacheMatch = event.request
     
   if (typeof cacheMatch !== 'undefined'){
